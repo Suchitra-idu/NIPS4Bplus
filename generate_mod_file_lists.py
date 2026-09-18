@@ -65,18 +65,20 @@ for i, j in lbl_files.iterrows():
     #for each valid csv file process tags
     if tags:
         for l, m in k.iterrows():
-            file_out = str(j['wav'])+'.wav'
-            try:
-                type_out = sps_list.loc[sps_list['class name'] ==
-                                        m[2]].type.values[0]
-                scient_out = sps_list.loc[sps_list['class name'] ==
-                                          m[2]].Scientific_name.values[0]
-            except:
-                type_out = ''
-                scient_out = ''
-            dict_out = dict(zip(['file', 'type', 'class_name', 'species', 'start', 'length'],
-                                [file_out, type_out, m[2], scient_out, m[0],m[1]]))
-            file_list.append(dict_out)
+            #exclude files less than 10ms
+            if m[1] > 0.01:
+                file_out = str(j['wav'])+'.wav'
+                try:
+                    type_out = sps_list.loc[sps_list['class name'] ==
+                                            m[2]].type.values[0]
+                    scient_out = sps_list.loc[sps_list['class name'] ==
+                                              m[2]].Scientific_name.values[0]
+                except IndexError:
+                    type_out = ''
+                    scient_out = ''
+                dict_out = dict(zip(['file', 'type', 'class_name', 'species', 'start', 'length'],
+                                    [file_out, type_out, m[2], scient_out, m[0],m[1]]))
+                file_list.append(dict_out)
 
 file_list = pd.DataFrame(file_list)
 
@@ -92,7 +94,7 @@ all_classes = pd.merge(all_classes, all_classes_dict, how='left', on=['class_nam
 
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(all_classes, stratify=all_classes['label'], test_size=0.25)
+train_files, test_files = train_test_split(all_classes, stratify=all_classes['label'], test_size=0.25, random_state=1234)
 
 # export file lists
 export_csv(train_files, 'mod_all_classes_train_files')
@@ -110,7 +112,7 @@ bird_classes_dict.columns = ['label', 'class_name']
 bird_classes = pd.merge(bird_classes, bird_classes_dict, how='left', on=['class_name'])
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(bird_classes, stratify=bird_classes['label'], test_size=0.25)
+train_files, test_files = train_test_split(bird_classes, stratify=bird_classes['label'], test_size=0.25, random_state=1234)
 
 # export file lists
 export_csv(train_files, 'mod_bird_classes_train_files')
@@ -129,7 +131,7 @@ bird_sps_dict.columns = ['label', 'species']
 bird_species = pd.merge(bird_species, bird_sps_dict, how='left', on=['species'])
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(bird_species, stratify=bird_species['label'], test_size=0.25)
+train_files, test_files = train_test_split(bird_species, stratify=bird_species['label'], test_size=0.25, random_state=1234)
 
 # export file lists
 export_csv(train_files, 'mod_bird_sps_train_files')

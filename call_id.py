@@ -172,11 +172,8 @@ snt_te=len(wav_lst_te)
 
 
 # Folder creation
-try:
-    os.stat(output_folder)
-except:
-    os.mkdir(output_folder) 
-    
+os.makedirs(output_folder, exist_ok=True)
+
     
 # setting seed
 torch.manual_seed(seed)

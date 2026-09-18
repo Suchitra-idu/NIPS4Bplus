@@ -84,7 +84,7 @@ for i, j in lbl_files.iterrows():
                                             m[2]].type.values[0]
                     scient_out = (sps_list.loc[sps_list['class name'] ==
                                                m[2]].Scientific_name.values[0])
-                except:
+                except IndexError:
                     type_out = ''
                     scient_out = ''
                 dict_out = dict(zip(['File', 'Type', 'Class', 'Scientific'],

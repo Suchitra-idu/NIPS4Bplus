@@ -59,7 +59,7 @@ for i, j in lbl_files.iterrows():
         signal = signal.astype(np.float64)
 
         # Signal normalization
-        signal = signal/np.abs(np.max(signal))
+        signal = signal/np.max(np.abs(signal))
 
         #cut signal according to tag
         for l, m in k.iterrows():

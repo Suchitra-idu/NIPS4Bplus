@@ -32,6 +32,6 @@ for i in glob.glob(os.path.join(wav_path , '') + '*.wav'):
     [signal, fs] = sf.read(i)
     signal = signal.astype(np.float64)
     # Signal normalization
-    signal = signal/np.abs(np.max(signal))
+    signal = signal/np.max(np.abs(signal))
     sf.write(os.path.join(output_path , '') + wav_file, signal, fs)
 

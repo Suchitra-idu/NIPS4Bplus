@@ -1,0 +1,13 @@
+.venv/
+SincNet_src/
+dnn_models.py
+data_io.py
+raw/
+cut_files/
+nips4b_norm_files/
+output/
+data_lists_generated/
+mod_data_lists_generated/
+__pycache__/
+Paper.pdf
+REPRODUCTION_REPORT.md
