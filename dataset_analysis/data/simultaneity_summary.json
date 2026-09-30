@@ -1,0 +1,11 @@
+{
+  "total_train_duration_s": 2906.1161999999936,
+  "unannotated_duration_s": 59.477900000000005,
+  "annotated_duration_s": 2846.6382999999937,
+  "pct_by_simultaneous_active_classes": {
+    "0": 66.31569303349835,
+    "1": 28.08547703419165,
+    "2": 5.237542904203895,
+    "3": 0.3612870281061004
+  }
+}

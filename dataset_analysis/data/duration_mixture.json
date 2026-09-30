@@ -1,0 +1,12 @@
+{
+  "train": {
+    "n_total": 687,
+    "n_full_length": 425,
+    "n_partial": 262
+  },
+  "test": {
+    "n_total": 1000,
+    "n_full_length": 583,
+    "n_partial": 417
+  }
+}

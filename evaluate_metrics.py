@@ -1,0 +1,170 @@
+# -*- coding: utf-8 -*-
+"""
+Evaluates a trained call_id.py/SincNet checkpoint on its test set and
+writes accuracy / roc_auc / precision / recall / top3_accuracy /
+top5_accuracy / trainable_params to <output_folder>/metrics.res, matching
+the metrics reported in Table 1 of Bravo Sanchez et al. 2021.
+
+How to run it:
+python evaluate_metrics.py --cfg=mod_cfg/mod_nips4bplus_bird_species.cfg
+"""
+
+import numpy as np
+import pandas as pd
+import soundfile as sf
+import torch
+from sklearn.metrics import (accuracy_score, precision_score, recall_score,
+                              roc_auc_score, top_k_accuracy_score)
+
+from data_io import read_conf, str_to_bool
+from dnn_models import MLP
+from dnn_models import SincNet as CNN
+
+options = read_conf()
+
+tr_lst = options.tr_lst
+te_lst = options.te_lst
+data_folder = options.data_folder + '/'
+output_folder = options.output_folder
+
+fs = int(options.fs)
+cw_len = int(options.cw_len)
+cw_shift = int(options.cw_shift)
+
+cnn_N_filt = list(map(int, options.cnn_N_filt.split(',')))
+cnn_len_filt = list(map(int, options.cnn_len_filt.split(',')))
+cnn_max_pool_len = list(map(int, options.cnn_max_pool_len.split(',')))
+cnn_use_laynorm_inp = str_to_bool(options.cnn_use_laynorm_inp)
+cnn_use_batchnorm_inp = str_to_bool(options.cnn_use_batchnorm_inp)
+cnn_use_laynorm = list(map(str_to_bool, options.cnn_use_laynorm.split(',')))
+cnn_use_batchnorm = list(map(str_to_bool, options.cnn_use_batchnorm.split(',')))
+cnn_act = list(map(str, options.cnn_act.split(',')))
+cnn_drop = list(map(float, options.cnn_drop.split(',')))
+
+fc_lay = list(map(int, options.fc_lay.split(',')))
+fc_drop = list(map(float, options.fc_drop.split(',')))
+fc_use_laynorm_inp = str_to_bool(options.fc_use_laynorm_inp)
+fc_use_batchnorm_inp = str_to_bool(options.fc_use_batchnorm_inp)
+fc_use_batchnorm = list(map(str_to_bool, options.fc_use_batchnorm.split(',')))
+fc_use_laynorm = list(map(str_to_bool, options.fc_use_laynorm.split(',')))
+fc_act = list(map(str, options.fc_act.split(',')))
+
+class_lay = list(map(int, options.class_lay.split(',')))
+class_drop = list(map(float, options.class_drop.split(',')))
+class_use_laynorm_inp = str_to_bool(options.class_use_laynorm_inp)
+class_use_batchnorm_inp = str_to_bool(options.class_use_batchnorm_inp)
+class_use_batchnorm = list(map(str_to_bool, options.class_use_batchnorm.split(',')))
+class_use_laynorm = list(map(str_to_bool, options.class_use_laynorm.split(',')))
+class_act = list(map(str, options.class_act.split(',')))
+
+wlen = int(fs*cw_len/1000.00)
+wshift = int(fs*cw_shift/1000.00)
+Batch_dev = 128
+
+wav_lst_te = pd.read_csv(te_lst)
+snt_te = len(wav_lst_te)
+n_classes = class_lay[-1]
+
+CNN_arch = {'input_dim': wlen, 'fs': fs, 'cnn_N_filt': cnn_N_filt,
+            'cnn_len_filt': cnn_len_filt, 'cnn_max_pool_len': cnn_max_pool_len,
+            'cnn_use_laynorm_inp': cnn_use_laynorm_inp, 'cnn_use_batchnorm_inp': cnn_use_batchnorm_inp,
+            'cnn_use_laynorm': cnn_use_laynorm, 'cnn_use_batchnorm': cnn_use_batchnorm,
+            'cnn_act': cnn_act, 'cnn_drop': cnn_drop}
+CNN_net = CNN(CNN_arch)
+CNN_net.cuda()
+
+DNN1_arch = {'input_dim': CNN_net.out_dim, 'fc_lay': fc_lay, 'fc_drop': fc_drop,
+             'fc_use_batchnorm': fc_use_batchnorm, 'fc_use_laynorm': fc_use_laynorm,
+             'fc_use_laynorm_inp': fc_use_laynorm_inp, 'fc_use_batchnorm_inp': fc_use_batchnorm_inp,
+             'fc_act': fc_act}
+DNN1_net = MLP(DNN1_arch)
+DNN1_net.cuda()
+
+DNN2_arch = {'input_dim': fc_lay[-1], 'fc_lay': class_lay, 'fc_drop': class_drop,
+             'fc_use_batchnorm': class_use_batchnorm, 'fc_use_laynorm': class_use_laynorm,
+             'fc_use_laynorm_inp': class_use_laynorm_inp, 'fc_use_batchnorm_inp': class_use_batchnorm_inp,
+             'fc_act': class_act}
+DNN2_net = MLP(DNN2_arch)
+DNN2_net.cuda()
+
+checkpoint_load = torch.load(output_folder+'/model_raw.pkl', map_location='cuda')
+CNN_net.load_state_dict(checkpoint_load['CNN_model_par'])
+DNN1_net.load_state_dict(checkpoint_load['DNN1_model_par'])
+DNN2_net.load_state_dict(checkpoint_load['DNN2_model_par'])
+
+trainable_params = (sum(p.numel() for p in CNN_net.parameters() if p.requires_grad)
+                     + sum(p.numel() for p in DNN1_net.parameters() if p.requires_grad)
+                     + sum(p.numel() for p in DNN2_net.parameters() if p.requires_grad))
+
+CNN_net.eval()
+DNN1_net.eval()
+DNN2_net.eval()
+
+y_true = np.zeros(snt_te, dtype=int)
+y_pred = np.zeros(snt_te, dtype=int)
+y_score = np.zeros((snt_te, n_classes))
+
+with torch.no_grad():
+    for i in range(snt_te):
+        [signal, fs_i] = sf.read(data_folder+wav_lst_te.loc[i, 'file'])
+        signal = torch.from_numpy(signal).float().cuda().contiguous()
+        lab_batch = wav_lst_te.loc[i, 'label']
+
+        beg_samp = 0
+        end_samp = wlen
+        N_fr = int((signal.shape[0]-wlen)/wshift)
+
+        sig_arr = torch.zeros([Batch_dev, wlen]).float().cuda().contiguous()
+        pout = torch.zeros(N_fr+1, n_classes).float().cuda().contiguous()
+        count_fr = 0
+        count_fr_tot = 0
+        while end_samp < signal.shape[0]:
+            sig_arr[count_fr, :] = signal[beg_samp:end_samp]
+            beg_samp = beg_samp+wshift
+            end_samp = beg_samp+wlen
+            count_fr = count_fr+1
+            count_fr_tot = count_fr_tot+1
+            if count_fr == Batch_dev:
+                inp = sig_arr
+                pout[count_fr_tot-Batch_dev:count_fr_tot, :] = DNN2_net(DNN1_net(CNN_net(inp)))
+                count_fr = 0
+                sig_arr = torch.zeros([Batch_dev, wlen]).float().cuda().contiguous()
+
+        if count_fr > 0:
+            inp = sig_arr[0:count_fr]
+            pout[count_fr_tot-count_fr:count_fr_tot, :] = DNN2_net(DNN1_net(CNN_net(inp)))
+
+        # Sentence-level decision matches call_id.py's own validation loop
+        # exactly: argmax(sum(pout, dim=0)), i.e. summed log-softmax scores
+        # across all frames of the whole file (not an average of per-frame
+        # probabilities, which -- since the tagged call can be a small
+        # fraction of a several-second recording -- gets diluted by
+        # background/silence frames and collapses accuracy toward random).
+        # softmax() of that same sum is monotonic with it (same argmax) and
+        # gives a valid probability vector for ROC AUC / top-k.
+        sent_scores = torch.sum(pout, dim=0)
+        sent_probs = torch.softmax(sent_scores, dim=0)
+
+        y_true[i] = int(lab_batch)
+        y_pred[i] = int(torch.argmax(sent_probs).item())
+        y_score[i, :] = sent_probs.cpu().numpy()
+
+labels = list(range(n_classes))
+accuracy = accuracy_score(y_true, y_pred)
+precision = precision_score(y_true, y_pred, labels=labels, average='weighted', zero_division=0)
+recall = recall_score(y_true, y_pred, labels=labels, average='weighted', zero_division=0)
+roc_auc = roc_auc_score(y_true, y_score, labels=labels, multi_class='ovr', average='weighted')
+top3_accuracy = top_k_accuracy_score(y_true, y_score, k=3, labels=labels)
+top5_accuracy = top_k_accuracy_score(y_true, y_score, k=5, labels=labels)
+
+with open(output_folder+"/metrics.res", "w") as f:
+    f.write("accuracy=%.4f\n" % accuracy)
+    f.write("roc_auc=%.4f\n" % roc_auc)
+    f.write("precision=%.4f\n" % precision)
+    f.write("recall=%.4f\n" % recall)
+    f.write("top3_accuracy=%.4f\n" % top3_accuracy)
+    f.write("top5_accuracy=%.4f\n" % top5_accuracy)
+    f.write("trainable_params=%d\n" % trainable_params)
+
+print("accuracy=%.4f roc_auc=%.4f precision=%.4f recall=%.4f top3=%.4f top5=%.4f params=%d" %
+      (accuracy, roc_auc, precision, recall, top3_accuracy, top5_accuracy, trainable_params))

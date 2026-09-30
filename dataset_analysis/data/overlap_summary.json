@@ -1,0 +1,7 @@
+{
+  "n_events": 5775,
+  "n_events_with_any_overlap": 1581,
+  "pct_events_with_any_overlap": 27.376623376623378,
+  "n_events_with_cross_label_overlap": 1384,
+  "pct_events_with_cross_label_overlap": 23.965367965367964
+}

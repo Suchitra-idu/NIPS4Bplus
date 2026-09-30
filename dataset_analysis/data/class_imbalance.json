@@ -1,0 +1,47 @@
+{
+  "raw_labels_incl_unknown_human": {
+    "n_classes": 89,
+    "total_count": 5775.0,
+    "min_count": 9.0,
+    "max_count": 282.0,
+    "median_count": 43.0,
+    "imbalance_ratio_max_min": 31.333333333333332,
+    "imbalance_ratio_max_median": 6.558139534883721,
+    "gini_coefficient": 0.4612987012987013,
+    "shannon_entropy_bits": 5.965587532782916,
+    "normalized_entropy": 0.9212219119854427,
+    "effective_n_classes": 62.49147695554629,
+    "zipf_slope": -0.868979980890159,
+    "zipf_r_squared": 0.8805744467087968
+  },
+  "species_labels_87_all_classes": {
+    "n_classes": 87,
+    "total_count": 5481.0,
+    "min_count": 9.0,
+    "max_count": 282.0,
+    "median_count": 43.0,
+    "imbalance_ratio_max_min": 31.333333333333332,
+    "imbalance_ratio_max_median": 6.558139534883721,
+    "gini_coefficient": 0.44736781399484515,
+    "shannon_entropy_bits": 5.966569126898305,
+    "normalized_entropy": 0.9260626188546652,
+    "effective_n_classes": 62.53400994900871,
+    "zipf_slope": -0.8422756093305506,
+    "zipf_r_squared": 0.8763692031642377
+  },
+  "bird_only_labels": {
+    "n_classes": 77,
+    "total_count": 5279.0,
+    "min_count": 12.0,
+    "max_count": 282.0,
+    "median_count": 47.0,
+    "imbalance_ratio_max_min": 23.5,
+    "imbalance_ratio_max_median": 6.0,
+    "gini_coefficient": 0.42613344223497673,
+    "shannon_entropy_bits": 5.838879528084703,
+    "normalized_entropy": 0.9317182722226965,
+    "effective_n_classes": 57.23713394090757,
+    "zipf_slope": -0.8036124425899026,
+    "zipf_r_squared": 0.8792343176253922
+  }
+}

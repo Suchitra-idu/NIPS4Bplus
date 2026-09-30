@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Upstream SincNet clone (separate git repo, not part of this project)
+SincNet_src/
+dnn_models.py
+data_io.py
+
+# Downloaded/generated data - large binaries, not source
+raw/
+cut_files/
+cut_files_fixed/
+nips4b_norm_files/
+nips4b_norm_files_fixed/
+data_lists_generated/
+data_lists_generated_fixed/
+mod_data_lists_generated/
+mod_data_lists_generated_fixed/
+output/
+
+# Reference paper (large binary, not source)
+Research Paper.pdf
+*.md
