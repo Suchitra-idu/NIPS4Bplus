@@ -245,7 +245,7 @@ silence ratio do not.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/01_file_duration_hist.png}
+\includegraphics[width=0.85\textwidth]{figures/01_file_duration_hist.pdf}
 \caption{File-duration histogram, train vs.\ test pool. File duration is a
 censored mixture, not a smooth continuous variable: 61.9\% of train files sit
 exactly at the 5.0039~s collection ceiling.}
@@ -254,7 +254,7 @@ exactly at the 5.0039~s collection ceiling.}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/13_train_test_shift.png}
+\includegraphics[width=0.8\textwidth]{figures/13_train_test_shift.pdf}
 \caption{Two-sample KS comparison of whole-file features, 687-file train
 pool vs.\ 1{,}000-file unused test pool. Amplitude-shape statistics
 (duration, crest factor, silence ratio) are statistically indistinguishable
@@ -327,7 +327,7 @@ distribution --- Weibull edges out Normal only marginally.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/14_amplitude_outlier_trainfile439.png}
+\includegraphics[width=0.75\textwidth]{figures/14_amplitude_outlier_trainfile439.pdf}
 \caption{\texttt{nips4b\_birds\_trainfile439.wav}: crest factor $150\times$,
 excess kurtosis 5{,}453 --- an order of magnitude beyond the next most
 extreme file. A single sharp transient in an otherwise near-silent
@@ -339,7 +339,7 @@ summary.}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/11_correlation_heatmap.png}
+\includegraphics[width=0.8\textwidth]{figures/11_correlation_heatmap.pdf}
 \caption{Correlation structure of whole-file features. Three clusters:
 timbre/spectral-shape ($r=0.6$--$0.92$: ZCR, centroid, bandwidth, rolloff,
 flatness), impulsiveness (crest factor $\leftrightarrow$ dynamic range,
@@ -350,7 +350,7 @@ bridging both ($r=0.44$--$0.58$ with the spectral cluster).}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/12_spectral_centroid_by_taxon.png}
+\includegraphics[width=0.75\textwidth]{figures/12_spectral_centroid_by_taxon.pdf}
 \caption{Spectral centroid by taxon (event-level, exact tagged segment).
 Insects register a visibly higher median spectral centroid than birds ---
 consistent with cicada/bush-cricket stridulation concentrating energy in a
@@ -385,7 +385,7 @@ range    & 23~$\mu$s--5.00 s & 23~$\mu$s--2.78 s & 25 ms--5.00 s & 28 ms--1.19 s
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/02_event_duration_distribution.png}
+\includegraphics[width=0.75\textwidth]{figures/02_event_duration_distribution.pdf}
 \caption{Tagged-event duration distribution, all 5{,}775 events. Best-fit
 family: lognormal, by a wide margin ($\Delta$AIC $>3{,}200$), fitted
 $\sigma\approx0.96$, scale $\approx0.10$~s.}
@@ -394,7 +394,7 @@ $\sigma\approx0.96$, scale $\approx0.10$~s.}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/03_event_duration_by_taxon.png}
+\includegraphics[width=0.75\textwidth]{figures/03_event_duration_by_taxon.pdf}
 \caption{Event duration by taxon. Insects are the one exception to the
 lognormal rule: with only 168 samples and a spread that mixes brief
 stridulation bursts with long sustained calls, Gamma edges out Lognormal.}
@@ -403,7 +403,7 @@ stridulation bursts with long sustained calls, Gamma edges out Lognormal.}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/04_qq_event_duration.png}
+\includegraphics[width=0.7\textwidth]{figures/04_qq_event_duration.pdf}
 \caption{Q--Q plot, log-transformed event duration vs.\ Normal quantiles.
 Log-transforming turns a distribution unusable for Gaussian-based reasoning
 into one that visually passes.}
@@ -461,14 +461,14 @@ Bird Classes & 77 & 12/282 & $23.5\times$ & 0.426 & 5.839 & 57.2 (74\%) & $-0.80
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/05_class_frequency.png}
+\includegraphics[width=0.75\textwidth]{figures/05_class_frequency.pdf}
 \caption{Class frequency, log scale, All Classes (87).}
 \label{fig:05}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/06_zipf_plot.png}
+\includegraphics[width=0.7\textwidth]{figures/06_zipf_plot.pdf}
 \caption{Zipf plot: class frequency decays roughly as $\text{rank}^{-1}$
 ($R^2\approx0.88$) --- between near-uniform and catastrophically long-tailed.}
 \label{fig:06}
@@ -476,7 +476,7 @@ Bird Classes & 77 & 12/282 & $23.5\times$ & 0.426 & 5.839 & 57.2 (74\%) & $-0.80
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/07_lorenz_curve.png}
+\includegraphics[width=0.7\textwidth]{figures/07_lorenz_curve.pdf}
 \caption{Lorenz curve: the least-frequent half of the 87 classes account for
 only $\sim$19\% of all tagged events. A model with no class weighting sees
 roughly $6.6\times$ more examples of the median class than of the typical
@@ -486,7 +486,7 @@ minority class.}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/08_active_classes_per_file.png}
+\includegraphics[width=0.7\textwidth]{figures/08_active_classes_per_file.pdf}
 \caption{Active (distinct) classes per recording --- right-skewed,
 mode-at-1, matching Morfi et al.\ Fig.~3.}
 \label{fig:08}
@@ -516,7 +516,7 @@ simultaneously active tags & this analysis & Morfi et al., Fig.~5 \\
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/09_simultaneity.png}
+\includegraphics[width=0.75\textwidth]{figures/09_simultaneity.pdf}
 \caption{Simultaneity histogram, sweep-line over all annotated intervals.}
 \label{fig:09}
 \end{figure}
@@ -532,7 +532,7 @@ stridulation songs acting as a near-continuous background.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/10_cooccurrence_heatmap.png}
+\includegraphics[width=0.75\textwidth]{figures/10_cooccurrence_heatmap.pdf}
 \caption{Label-pair co-occurrence heatmap. Strongest pairs are dominated by
 insect songs (e.g.\ \texttt{Carcar\_song}$\leftrightarrow$\texttt{Cicatr\_song},
 66 overlapping instances).}
@@ -541,7 +541,7 @@ insect songs (e.g.\ \texttt{Carcar\_song}$\leftrightarrow$\texttt{Cicatr\_song},
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/15_multi_tag_example_trainfile007.png}
+\includegraphics[width=0.85\textwidth]{figures/15_multi_tag_example_trainfile007.pdf}
 \caption{\texttt{nips4b\_birds\_trainfile007.wav}: 7 tagged events, 5
 species, plus an overlapping \texttt{Human} tag --- waveform, spectrogram,
 and tag timeline on a shared time axis.}
@@ -721,7 +721,7 @@ transform); the paper's contribution is making $(f_l,f_h)$
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/16_sincconv_filter_response.png}
+\includegraphics[width=0.85\textwidth]{figures/16_sincconv_filter_response.pdf}
 \caption{Illustrative SincConv band-pass filters (own computation from the
 closed-form definition, $L=151$, three example $(f_l,f_h)$ pairs). Top: the
 time-domain, Hamming-windowed filter $g[n]$. Bottom: its magnitude frequency

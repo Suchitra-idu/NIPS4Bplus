@@ -46,7 +46,7 @@ def fig_duration_hist(audio):
     ax.set_ylabel("Density")
     ax.set_title("Recording duration")
     ax.legend(fontsize=8)
-    savefig("01_file_duration_hist.png")
+    savefig("01_file_duration_hist.pdf")
 
 
 def fig_event_duration_dist(events):
@@ -70,7 +70,7 @@ def fig_event_duration_dist(events):
     axes[1].set_xlabel("log(event duration / 1 s)")
     axes[1].set_title("Event duration (log-transformed)")
     axes[1].legend(fontsize=8)
-    savefig("02_event_duration_distribution.png")
+    savefig("02_event_duration_distribution.pdf")
 
 
 def fig_event_duration_by_taxon(events):
@@ -83,7 +83,7 @@ def fig_event_duration_by_taxon(events):
     ax.set_yscale("log")
     ax.set_ylabel("Event duration (s, log scale)")
     ax.set_title("Event duration by taxonomic group")
-    savefig("03_event_duration_by_taxon.png")
+    savefig("03_event_duration_by_taxon.pdf")
 
 
 def fig_qq_event_duration(events):
@@ -94,7 +94,7 @@ def fig_qq_event_duration(events):
     axes[0].set_title("Q-Q vs Normal (raw duration)")
     stats.probplot(logd, dist="norm", plot=axes[1])
     axes[1].set_title("Q-Q vs Normal (log duration)")
-    savefig("04_qq_event_duration.png")
+    savefig("04_qq_event_duration.pdf")
 
 
 def fig_class_frequency(per_class):
@@ -107,7 +107,7 @@ def fig_class_frequency(per_class):
     ax.set_xticklabels(d["label"], rotation=90, fontsize=5)
     ax.set_ylabel("Number of tagged events (log scale)")
     ax.set_title("Class frequency")
-    savefig("05_class_frequency.png")
+    savefig("05_class_frequency.pdf")
 
 
 def fig_zipf(per_class):
@@ -122,7 +122,7 @@ def fig_zipf(per_class):
     ax.set_ylabel("Event count (log)")
     ax.set_title("Class frequency by rank")
     ax.legend(fontsize=8)
-    savefig("06_zipf_plot.png")
+    savefig("06_zipf_plot.pdf")
 
 
 def fig_lorenz(per_class):
@@ -141,7 +141,7 @@ def fig_lorenz(per_class):
     ax.set_ylabel("Cumulative fraction of tagged events")
     ax.set_title("Lorenz curve")
     ax.legend(fontsize=8)
-    savefig("07_lorenz_curve.png")
+    savefig("07_lorenz_curve.pdf")
 
 
 def fig_active_classes_hist(file_summary):
@@ -153,7 +153,7 @@ def fig_active_classes_hist(file_summary):
     ax.set_title("Active classes per recording")
     for x, y in zip(counts.index, counts.values):
         ax.text(x, y + 3, str(y), ha="center", fontsize=8)
-    savefig("08_active_classes_per_file.png")
+    savefig("08_active_classes_per_file.pdf")
 
 
 def fig_simultaneity(sim_summary):
@@ -167,7 +167,7 @@ def fig_simultaneity(sim_summary):
     ax.set_xlabel("Number of simultaneously active tagged classes")
     ax.set_ylabel("% of annotated recording duration")
     ax.set_title("Temporal overlap of tags")
-    savefig("09_simultaneity.png")
+    savefig("09_simultaneity.pdf")
 
 
 def fig_cooccurrence_heatmap():
@@ -182,7 +182,7 @@ def fig_cooccurrence_heatmap():
     ax.set_yticklabels(top_labels, fontsize=6)
     ax.set_title("Label co-occurrence")
     fig.colorbar(im, ax=ax, shrink=0.8, label="# overlapping event pairs")
-    savefig("10_cooccurrence_heatmap.png")
+    savefig("10_cooccurrence_heatmap.pdf")
 
 
 def fig_correlation_heatmap(audio):
@@ -203,7 +203,7 @@ def fig_correlation_heatmap(audio):
             ax.text(j, i, f"{corr.values[i,j]:.2f}", ha="center", va="center", fontsize=5.5)
     ax.set_title("Feature correlations")
     fig.colorbar(im, ax=ax, shrink=0.8)
-    savefig("11_correlation_heatmap.png")
+    savefig("11_correlation_heatmap.pdf")
 
 
 def fig_spectral_by_taxon(event_feats):
@@ -216,7 +216,7 @@ def fig_spectral_by_taxon(event_feats):
         patch.set_facecolor("#c0703d")
     ax.set_ylabel("Spectral centroid (Hz)")
     ax.set_title("Spectral centroid by taxonomic group")
-    savefig("12_spectral_centroid_by_taxon.png")
+    savefig("12_spectral_centroid_by_taxon.pdf")
 
 
 def fig_train_test_shift(audio):
@@ -232,7 +232,7 @@ def fig_train_test_shift(audio):
         ax.set_ylabel("Density")
         ax.legend(fontsize=8)
     fig.suptitle("Train vs. test spectral shift")
-    savefig("13_train_test_shift.png")
+    savefig("13_train_test_shift.pdf")
 
 
 def fig_amplitude_outlier():
@@ -244,7 +244,7 @@ def fig_amplitude_outlier():
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Amplitude")
     ax.set_title("trainfile439.wav")
-    savefig("14_amplitude_outlier_trainfile439.png")
+    savefig("14_amplitude_outlier_trainfile439.pdf")
 
 
 def fig_multi_tag_example():
@@ -295,7 +295,7 @@ def fig_multi_tag_example():
     axes[2].set_xlabel("Time (s)")
     axes[2].set_ylabel("Tagged\nevents")
     axes[2].invert_yaxis()
-    savefig("15_multi_tag_example_trainfile007.png")
+    savefig("15_multi_tag_example_trainfile007.pdf")
 
 
 def main():

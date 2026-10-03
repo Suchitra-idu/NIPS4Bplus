@@ -108,7 +108,7 @@ Parsing every annotation file that ships with the 687 training recordings gives 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.72\textwidth]{figures/02_event_duration_distribution.png}
+\includegraphics[width=0.72\textwidth]{figures/02_event_duration_distribution.pdf}
 \caption{Duration of the 5{,}775 tagged events, computed directly from the annotation files. Mean 195~ms, median 90~ms, std 455~ms, skewness 7.29.}
 \label{fig:eventdur}
 \end{figure}
@@ -117,7 +117,7 @@ Figure~\ref{fig:eventdur} shows why the window-length decision in Section 2.3 is
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.72\textwidth]{figures/05_class_frequency.png}
+\includegraphics[width=0.72\textwidth]{figures/05_class_frequency.pdf}
 \caption{Number of tagged events per class, all 87 classes, sorted, log scale.}
 \label{fig:classfreq}
 \end{figure}
@@ -128,7 +128,7 @@ Class imbalance is also worth putting a real number on rather than just calling 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.72\textwidth]{figures/09_simultaneity.png}
+\includegraphics[width=0.72\textwidth]{figures/09_simultaneity.pdf}
 \caption{How many tagged calls are active at the same instant, computed with a sweep-line over every annotation file's timeline. This reproduces \citet{morfi2019}'s own reported figures for the same statistic almost exactly (66.3/28.1/5.2/0.4 percent there, against 66.32/28.09/5.24/0.36 percent computed independently here).}
 \label{fig:simultaneity}
 \end{figure}
@@ -180,7 +180,7 @@ with $f_l, f_h \in \left[0, \dfrac{f_s}{2}\right]$ and $f_s$ the sampling freque
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.78\textwidth]{figures/16_sincconv_filter_response.png}
+\includegraphics[width=0.78\textwidth]{figures/16_sincconv_filter_response.pdf}
 \caption{Three example SincNet filters, computed directly from the equation above at the filter length used in the tuned configuration ($L=151$). Top: the filter itself in the time domain, after the Hamming window is applied. Bottom: the same filter's frequency response, which approximates a rectangular pass-band between $f_l$ and $f_h$.}
 \label{fig:sincfilters}
 \end{figure}
