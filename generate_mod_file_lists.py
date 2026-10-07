@@ -38,13 +38,16 @@ annotations_path=sys.argv[1]
 sps_list_file=sys.argv[2]
 #output path for csv list files
 output_path=sys.argv[3]
+#optional random seed for the train/test split (default 1234, the SincNet seed).
+#Use a different seed per run to get a different split (e.g. the 5 runs of Part I)
+split_seed = int(sys.argv[4]) if len(sys.argv) > 4 else 1234
 
 
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
 #collect csv label file list
-lbl_files = pd.DataFrame(glob.glob(os.path.join(annotations_path, '') + '*.csv'))
+lbl_files = pd.DataFrame(sorted(glob.glob(os.path.join(annotations_path, '') + '*.csv')))
 lbl_files.columns = ['csv']
 lbl_files['wav'] = 'nips4b_birds_trainfile' + lbl_files['csv'].str[-7:-4]
 
@@ -92,7 +95,7 @@ all_classes = pd.merge(all_classes, all_classes_dict, how='left', on=['class_nam
 
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(all_classes, stratify=all_classes['label'], test_size=0.25)
+train_files, test_files = train_test_split(all_classes, stratify=all_classes['label'], test_size=0.25, random_state=split_seed)
 
 # export file lists
 export_csv(train_files, 'mod_all_classes_train_files')
@@ -110,7 +113,7 @@ bird_classes_dict.columns = ['label', 'class_name']
 bird_classes = pd.merge(bird_classes, bird_classes_dict, how='left', on=['class_name'])
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(bird_classes, stratify=bird_classes['label'], test_size=0.25)
+train_files, test_files = train_test_split(bird_classes, stratify=bird_classes['label'], test_size=0.25, random_state=split_seed)
 
 # export file lists
 export_csv(train_files, 'mod_bird_classes_train_files')
@@ -129,7 +132,7 @@ bird_sps_dict.columns = ['label', 'species']
 bird_species = pd.merge(bird_species, bird_sps_dict, how='left', on=['species'])
 
 #Randomly split into train and test
-train_files, test_files = train_test_split(bird_species, stratify=bird_species['label'], test_size=0.25)
+train_files, test_files = train_test_split(bird_species, stratify=bird_species['label'], test_size=0.25, random_state=split_seed)
 
 # export file lists
 export_csv(train_files, 'mod_bird_sps_train_files')

@@ -22,6 +22,7 @@ https://github.com/fbravosanchez/NIPS4Bplus#readme
 """
 
 import os
+import time
 #import scipy.io.wavfile
 import soundfile as sf
 import torch
@@ -119,6 +120,10 @@ output_folder=options.output_folder
 fs=int(options.fs)
 cw_len=int(options.cw_len)
 cw_shift=int(options.cw_shift)
+# fact_amp is optional in the cfg ([windowing]); default 0.2 is the value hard-coded in the released code
+import configparser
+_cfg=configparser.ConfigParser(); _cfg.read(options.cfg)
+fact_amp=_cfg.getfloat('windowing','fact_amp',fallback=0.2)
 
 #[cnn]
 cnn_N_filt=list(map(int, options.cnn_N_filt.split(',')))
@@ -259,6 +264,8 @@ optimizer_DNN2 = optim.RMSprop(DNN2_net.parameters(), lr=lr,alpha=0.95, eps=1e-8
 
 
 
+train_start=time.time()
+
 for epoch in range(N_epochs):
   
   test_flag=0
@@ -273,7 +280,7 @@ for epoch in range(N_epochs):
 
 
     # [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_lst_tr,snt_tr,wlen,lab_dict,0.2)
-    [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_lst_tr,snt_tr,wlen,0.2) #lab_dict,0.2)
+    [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_lst_tr,snt_tr,wlen,fact_amp) #lab_dict,0.2)
     pout=DNN2_net(DNN1_net(CNN_net(inp)))
     
     pred=torch.max(pout,dim=1)[1]
@@ -375,6 +382,10 @@ for epoch in range(N_epochs):
   
    with open(output_folder+"/res.res", "a") as res_file:
     res_file.write("epoch %i, loss_tr=%f err_tr=%f loss_te=%f err_te=%f err_te_snt=%f\n" % (epoch, loss_tot,err_tot,loss_tot_dev,err_tot_dev,err_tot_dev_snt))   
+
+   # wall-clock training time so far (paper reports about 2 h per run, Table 1)
+   with open(output_folder+"/time.res", "a") as time_file:
+    time_file.write("epoch %i, elapsed_s=%.1f\n" % (epoch, time.time()-train_start))
 
    checkpoint={'CNN_model_par': CNN_net.state_dict(),
                'DNN1_model_par': DNN1_net.state_dict(),

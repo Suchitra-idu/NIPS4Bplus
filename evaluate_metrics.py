@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Evaluates a trained call_id.py/SincNet checkpoint on its test set and
-writes accuracy / roc_auc / precision / recall / top3_accuracy /
-top5_accuracy / trainable_params to <output_folder>/metrics.res, matching
+writes accuracy / roc_auc / precision / recall / f1 / FPR / FNR /
+top3 / top5 / roc_auc_mean_exp / trainable_params to <output_folder>/metrics.res, matching
 the metrics reported in Table 1 of Bravo Sanchez et al. 2021.
 
 How to run it:
@@ -13,8 +13,7 @@ import numpy as np
 import pandas as pd
 import soundfile as sf
 import torch
-from sklearn.metrics import (accuracy_score, precision_score, recall_score,
-                              roc_auc_score, top_k_accuracy_score)
+from metrics_utils import compute_metrics
 
 from data_io import read_conf, str_to_bool
 from dnn_models import MLP
@@ -103,6 +102,7 @@ DNN2_net.eval()
 y_true = np.zeros(snt_te, dtype=int)
 y_pred = np.zeros(snt_te, dtype=int)
 y_score = np.zeros((snt_te, n_classes))
+y_score_exp = np.zeros((snt_te, n_classes))
 
 with torch.no_grad():
     for i in range(snt_te):
@@ -148,23 +148,18 @@ with torch.no_grad():
         y_true[i] = int(lab_batch)
         y_pred[i] = int(torch.argmax(sent_probs).item())
         y_score[i, :] = sent_probs.cpu().numpy()
+        # "Mean Exp" (Table S7): mean over frames of exp(LogSoftmax output)
+        y_score_exp[i, :] = torch.exp(pout[:count_fr_tot]).mean(dim=0).cpu().numpy()
 
-labels = list(range(n_classes))
-accuracy = accuracy_score(y_true, y_pred)
-precision = precision_score(y_true, y_pred, labels=labels, average='weighted', zero_division=0)
-recall = recall_score(y_true, y_pred, labels=labels, average='weighted', zero_division=0)
-roc_auc = roc_auc_score(y_true, y_score, labels=labels, multi_class='ovr', average='weighted')
-top3_accuracy = top_k_accuracy_score(y_true, y_score, k=3, labels=labels)
-top5_accuracy = top_k_accuracy_score(y_true, y_score, k=5, labels=labels)
+m = compute_metrics(y_true, y_pred, y_score, y_score_exp, n_classes)
+m['trainable_params'] = trainable_params
 
 with open(output_folder+"/metrics.res", "w") as f:
-    f.write("accuracy=%.4f\n" % accuracy)
-    f.write("roc_auc=%.4f\n" % roc_auc)
-    f.write("precision=%.4f\n" % precision)
-    f.write("recall=%.4f\n" % recall)
-    f.write("top3_accuracy=%.4f\n" % top3_accuracy)
-    f.write("top5_accuracy=%.4f\n" % top5_accuracy)
-    f.write("trainable_params=%d\n" % trainable_params)
+    for k, v in m.items():
+        f.write(("%s=%d\n" if k == 'trainable_params' else "%s=%.4f\n") % (k, v))
 
-print("accuracy=%.4f roc_auc=%.4f precision=%.4f recall=%.4f top3=%.4f top5=%.4f params=%d" %
-      (accuracy, roc_auc, precision, recall, top3_accuracy, top5_accuracy, trainable_params))
+# saved for later plots (confusion matrix, ROC curves)
+np.savez(output_folder+"/predictions.npz", y_true=y_true, y_pred=y_pred,
+         y_score=y_score, y_score_exp=y_score_exp)
+
+print(" ".join(("%s=%d" if k == 'trainable_params' else "%s=%.4f") % (k, v) for k, v in m.items()))

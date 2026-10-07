@@ -46,6 +46,8 @@ sps_list_file = sys.argv[2]
 # cut_files_path = sys.argv[3]
 #output path for dictionary files
 output_path = sys.argv[3]
+#optional random seed for the train/test split (default 1234, the SincNet seed)
+split_seed = int(sys.argv[4]) if len(sys.argv) > 4 else 1234
 
 
 if not os.path.exists(output_path):
@@ -53,7 +55,7 @@ if not os.path.exists(output_path):
 
 
 #collect csv label file list
-lbl_files = pd.DataFrame(glob.glob(os.path.join(csv_path, '') + '*.csv'))
+lbl_files = pd.DataFrame(sorted(glob.glob(os.path.join(csv_path, '') + '*.csv')))
 lbl_files.columns = ['csv']
 lbl_files['wav'] = 'nips4b_birds_trainfile' + lbl_files['csv'].str[-7:-4]
 
@@ -99,7 +101,7 @@ file_list_all_classes = file_list[file_list['Type'] != '']
 #Randomly split into train and test
 tr_files, ts_files = tr_te_split(file_list_all_classes['File'], 
                                  stratify=file_list_all_classes['Class'], 
-                                 test_size=0.25)
+                                 test_size=0.25, random_state=split_seed)
 
 # save train and test file lists
 export_scp(ts_files, 'all_classes_test_files')
@@ -123,7 +125,7 @@ file_list_birds = file_list[file_list['Type'] == 'bird']
 #Repeat a random split into train and test including only birds
 tr_files, ts_files = tr_te_split(file_list_birds['File'], 
                                  stratify=file_list_birds['Class'], 
-                                 test_size=0.25)
+                                 test_size=0.25, random_state=split_seed)
 
 # save train and test file lists
 export_scp(ts_files, 'bird_test_files')
