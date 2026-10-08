@@ -18,7 +18,7 @@ data_lists_generated/
 data_lists_generated_fixed/
 mod_data_lists_generated/
 mod_data_lists_generated_fixed/
-output/
+# output/
 
 # Reference paper (large binary, not source)
 Research Paper.pdf
