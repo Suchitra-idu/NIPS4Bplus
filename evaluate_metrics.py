@@ -58,7 +58,9 @@ class_act = list(map(str, options.class_act.split(',')))
 
 wlen = int(fs*cw_len/1000.00)
 wshift = int(fs*cw_shift/1000.00)
-Batch_dev = 128
+# Eval-only batch size; frames are scored independently in eval mode, so this
+# only changes speed (original was 128)
+Batch_dev = 1024
 
 wav_lst_te = pd.read_csv(te_lst)
 snt_te = len(wav_lst_te)
@@ -104,52 +106,51 @@ y_pred = np.zeros(snt_te, dtype=int)
 y_score = np.zeros((snt_te, n_classes))
 y_score_exp = np.zeros((snt_te, n_classes))
 
+# Whole-file scores, computed once per unique file (the test list has
+# several tag rows per file and each row scores the same whole file)
+file_scores = {}
+file_scores_exp = {}
+
 with torch.no_grad():
     for i in range(snt_te):
-        [signal, fs_i] = sf.read(data_folder+wav_lst_te.loc[i, 'file'])
-        signal = torch.from_numpy(signal).float().cuda().contiguous()
+        fname = wav_lst_te.loc[i, 'file']
         lab_batch = wav_lst_te.loc[i, 'label']
 
-        beg_samp = 0
-        end_samp = wlen
-        N_fr = int((signal.shape[0]-wlen)/wshift)
+        if fname not in file_scores:
+            [signal, fs_i] = sf.read(data_folder+fname)
+            signal = torch.from_numpy(signal).float().cuda().contiguous()
 
-        sig_arr = torch.zeros([Batch_dev, wlen]).float().cuda().contiguous()
-        pout = torch.zeros(N_fr+1, n_classes).float().cuda().contiguous()
-        count_fr = 0
-        count_fr_tot = 0
-        while end_samp < signal.shape[0]:
-            sig_arr[count_fr, :] = signal[beg_samp:end_samp]
-            beg_samp = beg_samp+wshift
-            end_samp = beg_samp+wlen
-            count_fr = count_fr+1
-            count_fr_tot = count_fr_tot+1
-            if count_fr == Batch_dev:
-                inp = sig_arr
-                pout[count_fr_tot-Batch_dev:count_fr_tot, :] = DNN2_net(DNN1_net(CNN_net(inp)))
-                count_fr = 0
-                sig_arr = torch.zeros([Batch_dev, wlen]).float().cuda().contiguous()
+            N_fr = int((signal.shape[0]-wlen)/wshift)
 
-        if count_fr > 0:
-            inp = sig_arr[0:count_fr]
-            pout[count_fr_tot-count_fr:count_fr_tot, :] = DNN2_net(DNN1_net(CNN_net(inp)))
+            # Same frames as the original while-loop (start k*wshift while
+            # start+wlen < len, strictly), built in one unfold call. As before,
+            # pout has N_fr+1 rows and any row not covered by a frame stays 0.
+            n_frames = max(0, -(-(signal.shape[0]-wlen)//wshift))
+            frames = signal.unfold(0, wlen, wshift)[:n_frames]
+            pout = torch.zeros(N_fr+1, n_classes).float().cuda().contiguous()
+            for beg in range(0, n_frames, Batch_dev):
+                inp = frames[beg:beg+Batch_dev].contiguous()
+                pout[beg:beg+inp.shape[0], :] = DNN2_net(DNN1_net(CNN_net(inp)))
 
-        # Sentence-level decision matches call_id.py's own validation loop
-        # exactly: argmax(sum(pout, dim=0)), i.e. summed log-softmax scores
-        # across all frames of the whole file (not an average of per-frame
-        # probabilities, which -- since the tagged call can be a small
-        # fraction of a several-second recording -- gets diluted by
-        # background/silence frames and collapses accuracy toward random).
-        # softmax() of that same sum is monotonic with it (same argmax) and
-        # gives a valid probability vector for ROC AUC / top-k.
-        sent_scores = torch.sum(pout, dim=0)
+            # Sentence-level decision matches call_id.py's own validation loop
+            # exactly: argmax(sum(pout, dim=0)), i.e. summed log-softmax scores
+            # across all frames of the whole file (not an average of per-frame
+            # probabilities, which -- since the tagged call can be a small
+            # fraction of a several-second recording -- gets diluted by
+            # background/silence frames and collapses accuracy toward random).
+            # softmax() of that same sum is monotonic with it (same argmax) and
+            # gives a valid probability vector for ROC AUC / top-k.
+            file_scores[fname] = torch.sum(pout, dim=0)
+            # "Mean Exp" (Table S7): mean over frames of exp(LogSoftmax output)
+            file_scores_exp[fname] = torch.exp(pout[:n_frames]).mean(dim=0)
+
+        sent_scores = file_scores[fname]
         sent_probs = torch.softmax(sent_scores, dim=0)
 
         y_true[i] = int(lab_batch)
         y_pred[i] = int(torch.argmax(sent_probs).item())
         y_score[i, :] = sent_probs.cpu().numpy()
-        # "Mean Exp" (Table S7): mean over frames of exp(LogSoftmax output)
-        y_score_exp[i, :] = torch.exp(pout[:count_fr_tot]).mean(dim=0).cpu().numpy()
+        y_score_exp[i, :] = file_scores_exp[fname].cpu().numpy()
 
 m = compute_metrics(y_true, y_pred, y_score, y_score_exp, n_classes)
 m['trainable_params'] = trainable_params
