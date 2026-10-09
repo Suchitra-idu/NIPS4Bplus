@@ -1,0 +1,11 @@
+{
+ "output_subtype": "PCM_16",
+ "n_files": 687,
+ "n_files_would_exceed_1": 187,
+ "max_overshoot": 3.769633507853403,
+ "n_files_with_clipped_samples": 187,
+ "max_clipped_samples": 51454,
+ "median_clipped_when_clipped": 2.0,
+ "max_clipped_fraction": 0.23316959106728538,
+ "median_clipped_fraction_when_clipped": 1.1964012251148546e-05
+}

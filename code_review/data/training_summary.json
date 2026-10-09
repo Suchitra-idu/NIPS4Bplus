@@ -1,0 +1,41 @@
+{
+ "all_classes": {
+  "final_train_loss": 0.3229867,
+  "final_train_acc": 0.8946288,
+  "test_acc": 0.5514,
+  "gap": 0.3432288,
+  "first_epoch_ge_50pct_train_acc": 10,
+  "epoch_last_improve_10ep_avg": 399,
+  "wall_clock_min": 75.80666666666666,
+  "sec_per_epoch": 11.58854441776711,
+  "last_saved_epoch": 392,
+  "epochs_logged": 400,
+  "epochs_lost_after_last_ckpt": 7
+ },
+ "bird_classes": {
+  "final_train_loss": 0.3652963,
+  "final_train_acc": 0.8805955,
+  "test_acc": 0.5803,
+  "gap": 0.30029549999999994,
+  "first_epoch_ge_50pct_train_acc": 13,
+  "epoch_last_improve_10ep_avg": 399,
+  "wall_clock_min": 75.28500000000001,
+  "sec_per_epoch": 11.49716866746699,
+  "last_saved_epoch": 392,
+  "epochs_logged": 400,
+  "epochs_lost_after_last_ckpt": 7
+ },
+ "bird_species": {
+  "final_train_loss": 0.34636659999999997,
+  "final_train_acc": 0.8845996,
+  "test_acc": 0.5841,
+  "gap": 0.3004996000000001,
+  "first_epoch_ge_50pct_train_acc": 8,
+  "epoch_last_improve_10ep_avg": 399,
+  "wall_clock_min": 77.66000000000001,
+  "sec_per_epoch": 11.885720888355348,
+  "last_saved_epoch": 392,
+  "epochs_logged": 400,
+  "epochs_lost_after_last_ckpt": 7
+ }
+}

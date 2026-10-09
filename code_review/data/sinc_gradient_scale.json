@@ -1,0 +1,27 @@
+{
+ "low": {
+  "mean_abs_grad": 1.6112644516397268e-05,
+  "median_rms": 1.969285949598998e-05,
+  "median_sign_consistency": 0.09999476373195648,
+  "p90_sign_consistency": 0.243318110704422,
+  "frac_steps_same_sign_as_mean": 0.5446590909090909,
+  "drift_upper_bound_hz": 32.0,
+  "drift_systematic_hz": 3.1998324394226074,
+  "drift_random_walk_hz": 0.17888543819998318
+ },
+ "band": {
+  "mean_abs_grad": 8.23508707981091e-06,
+  "median_rms": 1.0168072549276985e-05,
+  "median_sign_consistency": 0.11555434763431549,
+  "p90_sign_consistency": 0.32286641001701355,
+  "frac_steps_same_sign_as_mean": 0.5611742424242424,
+  "drift_upper_bound_hz": 32.0,
+  "drift_systematic_hz": 3.6977391242980957,
+  "drift_random_walk_hz": 0.17888543819998318
+ },
+ "conv2_mean_abs_grad": 0.0009058614518532219,
+ "first_step_hz": 0.004472135954999577,
+ "steps_total": 32000,
+ "fs_range_hz": 22050,
+ "relative_lr_old_sinc_conv": "params stored as f/fs: step 1e-3*fs = 44.1 Hz"
+}

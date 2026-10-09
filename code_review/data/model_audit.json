@@ -1,0 +1,494 @@
+{
+ "enhanced/all_classes": {
+  "wlen": 793,
+  "shapes": [
+   [
+    "input",
+    793
+   ],
+   [
+    "conv0",
+    [
+     220,
+     643
+    ]
+   ],
+   [
+    "pool0",
+    [
+     220,
+     128
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     124
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     24
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     20
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     4
+    ]
+   ],
+   [
+    "flatten",
+    240
+   ]
+  ],
+  "params_cnn": 144920,
+  "params_dnn1": 2358272,
+  "params_dnn2": 89523,
+  "params_total": 2592715,
+  "params_unused_norm_cnn": 59680,
+  "params_unused_norm_dnn1": 6144,
+  "params_unused_norm_dnn2": 348,
+  "params_sinc": 440,
+  "params_conv1": 66060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 3072,
+  "cnn_bn_eps": [
+   128.0,
+   24.0,
+   4.0
+  ],
+  "cnn_use_bn": [
+   true,
+   true,
+   true
+  ],
+  "cnn_use_ln": [
+   false,
+   false,
+   false
+  ],
+  "params_effective": 2523471
+ },
+ "enhanced/bird_classes": {
+  "wlen": 705,
+  "shapes": [
+   [
+    "input",
+    705
+   ],
+   [
+    "conv0",
+    [
+     220,
+     555
+    ]
+   ],
+   [
+    "pool0",
+    [
+     220,
+     111
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     107
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     21
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     17
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     3
+    ]
+   ],
+   [
+    "flatten",
+    180
+   ]
+  ],
+  "params_cnn": 136960,
+  "params_dnn1": 2296832,
+  "params_dnn2": 79233,
+  "params_total": 2513025,
+  "params_unused_norm_cnn": 51720,
+  "params_unused_norm_dnn1": 6144,
+  "params_unused_norm_dnn2": 308,
+  "params_sinc": 440,
+  "params_conv1": 66060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 3072,
+  "cnn_bn_eps": [
+   111.0,
+   21.0,
+   3.0
+  ],
+  "cnn_use_bn": [
+   true,
+   true,
+   true
+  ],
+  "cnn_use_ln": [
+   false,
+   false,
+   false
+  ],
+  "params_effective": 2451781
+ },
+ "enhanced/bird_species": {
+  "wlen": 705,
+  "shapes": [
+   [
+    "input",
+    705
+   ],
+   [
+    "conv0",
+    [
+     220,
+     555
+    ]
+   ],
+   [
+    "pool0",
+    [
+     220,
+     111
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     107
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     21
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     17
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     3
+    ]
+   ],
+   [
+    "flatten",
+    180
+   ]
+  ],
+  "params_cnn": 136960,
+  "params_dnn1": 2296832,
+  "params_dnn2": 52479,
+  "params_total": 2486271,
+  "params_unused_norm_cnn": 51720,
+  "params_unused_norm_dnn1": 6144,
+  "params_unused_norm_dnn2": 204,
+  "params_sinc": 440,
+  "params_conv1": 66060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 3072,
+  "cnn_bn_eps": [
+   111.0,
+   21.0,
+   3.0
+  ],
+  "cnn_use_bn": [
+   true,
+   true,
+   true
+  ],
+  "cnn_use_ln": [
+   false,
+   false,
+   false
+  ],
+  "params_effective": 2425131
+ },
+ "default/all_classes": {
+  "wlen": 441,
+  "shapes": [
+   [
+    "input",
+    441
+   ],
+   [
+    "conv0",
+    [
+     80,
+     191
+    ]
+   ],
+   [
+    "pool0",
+    [
+     80,
+     63
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     59
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     19
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     15
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     5
+    ]
+   ],
+   [
+    "flatten",
+    300
+   ]
+  ],
+  "params_cnn": 56522,
+  "params_dnn1": 9034328,
+  "params_dnn2": 178611,
+  "params_total": 9269461,
+  "params_unused_norm_cnn": 400,
+  "params_unused_norm_dnn1": 12288,
+  "params_unused_norm_dnn2": 348,
+  "params_sinc": 160,
+  "params_conv1": 24060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 6144,
+  "cnn_bn_eps": [
+   63.0,
+   19.0,
+   5.0
+  ],
+  "cnn_use_bn": [
+   false,
+   false,
+   false
+  ],
+  "cnn_use_ln": [
+   true,
+   true,
+   true
+  ],
+  "params_effective": 9250281
+ },
+ "default/bird_classes": {
+  "wlen": 441,
+  "shapes": [
+   [
+    "input",
+    441
+   ],
+   [
+    "conv0",
+    [
+     80,
+     191
+    ]
+   ],
+   [
+    "pool0",
+    [
+     80,
+     63
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     59
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     19
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     15
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     5
+    ]
+   ],
+   [
+    "flatten",
+    300
+   ]
+  ],
+  "params_cnn": 56522,
+  "params_dnn1": 9034328,
+  "params_dnn2": 158081,
+  "params_total": 9248931,
+  "params_unused_norm_cnn": 400,
+  "params_unused_norm_dnn1": 12288,
+  "params_unused_norm_dnn2": 308,
+  "params_sinc": 160,
+  "params_conv1": 24060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 6144,
+  "cnn_bn_eps": [
+   63.0,
+   19.0,
+   5.0
+  ],
+  "cnn_use_bn": [
+   false,
+   false,
+   false
+  ],
+  "cnn_use_ln": [
+   true,
+   true,
+   true
+  ],
+  "params_effective": 9229791
+ },
+ "default/bird_species": {
+  "wlen": 441,
+  "shapes": [
+   [
+    "input",
+    441
+   ],
+   [
+    "conv0",
+    [
+     80,
+     191
+    ]
+   ],
+   [
+    "pool0",
+    [
+     80,
+     63
+    ]
+   ],
+   [
+    "conv1",
+    [
+     60,
+     59
+    ]
+   ],
+   [
+    "pool1",
+    [
+     60,
+     19
+    ]
+   ],
+   [
+    "conv2",
+    [
+     60,
+     15
+    ]
+   ],
+   [
+    "pool2",
+    [
+     60,
+     5
+    ]
+   ],
+   [
+    "flatten",
+    300
+   ]
+  ],
+  "params_cnn": 56522,
+  "params_dnn1": 9034328,
+  "params_dnn2": 104703,
+  "params_total": 9195553,
+  "params_unused_norm_cnn": 400,
+  "params_unused_norm_dnn1": 12288,
+  "params_unused_norm_dnn2": 204,
+  "params_sinc": 160,
+  "params_conv1": 24060,
+  "params_conv2": 18060,
+  "dead_bias_before_bn": 6144,
+  "cnn_bn_eps": [
+   63.0,
+   19.0,
+   5.0
+  ],
+  "cnn_use_bn": [
+   false,
+   false,
+   false
+  ],
+  "cnn_use_ln": [
+   true,
+   true,
+   true
+  ],
+  "params_effective": 9176517
+ }
+}

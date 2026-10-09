@@ -1,0 +1,47 @@
+{
+ "all_classes": {
+  "wlen": 793,
+  "window_ms": 17.98185941043084,
+  "max_draw_over_share_dev": 0.0011105596107055943,
+  "classes_per_batch_mean": 54.744,
+  "classes_per_batch_min": 45,
+  "frac_windows_overlapped_by_other_class": 0.1642,
+  "frac_windows_overlapped_by_any_other_tag": 0.1764,
+  "expected_draws_rarest_class_per_epoch": 17.440389294403893,
+  "expected_draws_commonest_class_per_epoch": 525.7031630170317,
+  "draws_per_tag_per_run": 996.5936739659368
+ },
+ "bird_classes": {
+  "wlen": 705,
+  "window_ms": 15.986394557823129,
+  "max_draw_over_share_dev": 0.0009034251073503433,
+  "classes_per_batch_mean": 52.216,
+  "classes_per_batch_min": 44,
+  "frac_windows_overlapped_by_other_class": 0.1694,
+  "frac_windows_overlapped_by_any_other_tag": 0.1768,
+  "expected_draws_rarest_class_per_epoch": 23.278605708512252,
+  "expected_draws_commonest_class_per_epoch": 545.7539782773428,
+  "draws_per_tag_per_run": 1034.6046981561
+ },
+ "bird_species": {
+  "wlen": 705,
+  "window_ms": 15.986394557823129,
+  "max_draw_over_share_dev": 0.0017377393281131602,
+  "classes_per_batch_mean": 39.264,
+  "classes_per_batch_min": 33,
+  "frac_windows_overlapped_by_other_class": 0.1664,
+  "frac_windows_overlapped_by_any_other_tag": 0.1758,
+  "expected_draws_rarest_class_per_epoch": 28.451629199292753,
+  "expected_draws_commonest_class_per_epoch": 814.7511997979288,
+  "draws_per_tag_per_run": 1034.6046981561
+ },
+ "example": {
+  "duration_s": 5.00390022675737,
+  "n_samples": 220672,
+  "n_ann_rows": 7,
+  "n_rows_dropped": 1,
+  "dense_frames": 5000,
+  "peak": 0.999969482421875,
+  "rms": 0.08947974743270684
+ }
+}

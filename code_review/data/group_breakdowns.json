@@ -1,0 +1,456 @@
+{
+ "all_classes": {
+  "groups": {
+   "type": {
+    "amphibian": {
+     "n": 8,
+     "acc": 0.5,
+     "acc_mean_p": 0.875
+    },
+    "bird": {
+     "n": 1321,
+     "acc": 0.557,
+     "acc_mean_p": 0.577
+    },
+    "insect": {
+     "n": 42,
+     "acc": 0.381,
+     "acc_mean_p": 0.31
+    }
+   },
+   "call_type": {
+    "call": {
+     "n": 486,
+     "acc": 0.416,
+     "acc_mean_p": 0.459
+    },
+    "drum": {
+     "n": 5,
+     "acc": 0.0,
+     "acc_mean_p": 0.0
+    },
+    "song": {
+     "n": 880,
+     "acc": 0.63,
+     "acc_mean_p": 0.635
+    }
+   },
+   "dur_bin": {
+    "<30ms": {
+     "n": 82,
+     "acc": 0.622,
+     "acc_mean_p": 0.598
+    },
+    "30-60": {
+     "n": 385,
+     "acc": 0.616,
+     "acc_mean_p": 0.629
+    },
+    "60-100": {
+     "n": 299,
+     "acc": 0.538,
+     "acc_mean_p": 0.595
+    },
+    "100-200": {
+     "n": 346,
+     "acc": 0.52,
+     "acc_mean_p": 0.54
+    },
+    "200-500": {
+     "n": 188,
+     "acc": 0.521,
+     "acc_mean_p": 0.521
+    },
+    ">500ms": {
+     "n": 71,
+     "acc": 0.408,
+     "acc_mean_p": 0.394
+    }
+   },
+   "n_labels_file": {
+    "1": {
+     "n": 716,
+     "acc": 0.642,
+     "acc_mean_p": 0.666
+    },
+    "2": {
+     "n": 483,
+     "acc": 0.495,
+     "acc_mean_p": 0.499
+    },
+    "3": {
+     "n": 172,
+     "acc": 0.331,
+     "acc_mean_p": 0.372
+    }
+   }
+  },
+  "acc": 0.5514223194748359,
+  "acc_ci95": [
+   0.5072996387172802,
+   0.5959154923335068
+  ],
+  "top_confusions": [
+   {
+    "true": "Parcae_song",
+    "pred": "Parmaj_song",
+    "n": 17
+   },
+   {
+    "true": "Sylmel_call",
+    "pred": "Sylmel_song",
+    "n": 12
+   },
+   {
+    "true": "Sylcan_call",
+    "pred": "Galthe_song",
+    "n": 11
+   },
+   {
+    "true": "Sylcan_call",
+    "pred": "Sylcan_song",
+    "n": 9
+   },
+   {
+    "true": "Poepal_call",
+    "pred": "Turphi_song",
+    "n": 9
+   },
+   {
+    "true": "Phycol_song",
+    "pred": "Erirub_song",
+    "n": 8
+   },
+   {
+    "true": "Petpet_song",
+    "pred": "Sylcan_song",
+    "n": 8
+   },
+   {
+    "true": "Erirub_call",
+    "pred": "Prumod_song",
+    "n": 8
+   },
+   {
+    "true": "Picpic_call",
+    "pred": "Carcar_song",
+    "n": 7
+   },
+   {
+    "true": "Carcan_song",
+    "pred": "Serser_song",
+    "n": 7
+   },
+   {
+    "true": "Parate_song",
+    "pred": "Cerbra_song",
+    "n": 7
+   },
+   {
+    "true": "Turmer_call",
+    "pred": "Prumod_song",
+    "n": 7
+   }
+  ],
+  "n_classes_recall0": 25,
+  "macro_recall": 0.394955960222374,
+  "macro_precision": 0.5293293546025047,
+  "classes_never_predicted": 18
+ },
+ "bird_classes": {
+  "groups": {
+   "type": {
+    "bird": {
+     "n": 1320,
+     "acc": 0.58,
+     "acc_mean_p": 0.567
+    }
+   },
+   "call_type": {
+    "call": {
+     "n": 477,
+     "acc": 0.411,
+     "acc_mean_p": 0.373
+    },
+    "drum": {
+     "n": 5,
+     "acc": 0.0,
+     "acc_mean_p": 0.0
+    },
+    "song": {
+     "n": 838,
+     "acc": 0.68,
+     "acc_mean_p": 0.68
+    }
+   },
+   "dur_bin": {
+    "<30ms": {
+     "n": 80,
+     "acc": 0.612,
+     "acc_mean_p": 0.412
+    },
+    "30-60": {
+     "n": 358,
+     "acc": 0.634,
+     "acc_mean_p": 0.581
+    },
+    "60-100": {
+     "n": 320,
+     "acc": 0.659,
+     "acc_mean_p": 0.644
+    },
+    "100-200": {
+     "n": 333,
+     "acc": 0.529,
+     "acc_mean_p": 0.559
+    },
+    "200-500": {
+     "n": 177,
+     "acc": 0.48,
+     "acc_mean_p": 0.548
+    },
+    ">500ms": {
+     "n": 52,
+     "acc": 0.346,
+     "acc_mean_p": 0.346
+    }
+   },
+   "n_labels_file": {
+    "1": {
+     "n": 681,
+     "acc": 0.718,
+     "acc_mean_p": 0.698
+    },
+    "2": {
+     "n": 497,
+     "acc": 0.485,
+     "acc_mean_p": 0.489
+    },
+    "3": {
+     "n": 142,
+     "acc": 0.254,
+     "acc_mean_p": 0.211
+    }
+   }
+  },
+  "acc": 0.5803030303030303,
+  "acc_ci95": [
+   0.5342900377654382,
+   0.6240608363975633
+  ],
+  "top_confusions": [
+   {
+    "true": "Sylcan_call",
+    "pred": "Sylcan_song",
+    "n": 20
+   },
+   {
+    "true": "Parmaj_song",
+    "pred": "Parcae_song",
+    "n": 17
+   },
+   {
+    "true": "Sylmel_call",
+    "pred": "Sylmel_song",
+    "n": 15
+   },
+   {
+    "true": "Regign_song",
+    "pred": "Erirub_song",
+    "n": 12
+   },
+   {
+    "true": "Lusmeg_song",
+    "pred": "Lularb_song",
+    "n": 10
+   },
+   {
+    "true": "Cetcet_song",
+    "pred": "Lusmeg_song",
+    "n": 10
+   },
+   {
+    "true": "Picpic_call",
+    "pred": "Carcar_song",
+    "n": 9
+   },
+   {
+    "true": "Carcan_song",
+    "pred": "Sylund_song",
+    "n": 9
+   },
+   {
+    "true": "Turmer_call",
+    "pred": "Prumod_song",
+    "n": 9
+   },
+   {
+    "true": "Petpet_song",
+    "pred": "Sylcan_song",
+    "n": 7
+   },
+   {
+    "true": "Parate_call",
+    "pred": "Turphi_song",
+    "n": 7
+   },
+   {
+    "true": "Petpet_call",
+    "pred": "Sylcan_song",
+    "n": 7
+   }
+  ],
+  "n_classes_recall0": 23,
+  "macro_recall": 0.39572136291853316,
+  "macro_precision": 0.5652056914645696,
+  "classes_never_predicted": 20
+ },
+ "bird_species": {
+  "groups": {
+   "type": {
+    "bird": {
+     "n": 1320,
+     "acc": 0.584,
+     "acc_mean_p": 0.583
+    }
+   },
+   "call_type": {
+    "call": {
+     "n": 475,
+     "acc": 0.469,
+     "acc_mean_p": 0.446
+    },
+    "drum": {
+     "n": 5,
+     "acc": 0.0,
+     "acc_mean_p": 0.0
+    },
+    "song": {
+     "n": 840,
+     "acc": 0.652,
+     "acc_mean_p": 0.663
+    }
+   },
+   "dur_bin": {
+    "<30ms": {
+     "n": 76,
+     "acc": 0.671,
+     "acc_mean_p": 0.658
+    },
+    "30-60": {
+     "n": 376,
+     "acc": 0.691,
+     "acc_mean_p": 0.694
+    },
+    "60-100": {
+     "n": 300,
+     "acc": 0.553,
+     "acc_mean_p": 0.537
+    },
+    "100-200": {
+     "n": 350,
+     "acc": 0.566,
+     "acc_mean_p": 0.574
+    },
+    "200-500": {
+     "n": 160,
+     "acc": 0.444,
+     "acc_mean_p": 0.462
+    },
+    ">500ms": {
+     "n": 58,
+     "acc": 0.431,
+     "acc_mean_p": 0.379
+    }
+   },
+   "n_labels_file": {
+    "1": {
+     "n": 691,
+     "acc": 0.716,
+     "acc_mean_p": 0.718
+    },
+    "2": {
+     "n": 494,
+     "acc": 0.506,
+     "acc_mean_p": 0.492
+    },
+    "3": {
+     "n": 135,
+     "acc": 0.193,
+     "acc_mean_p": 0.222
+    }
+   }
+  },
+  "acc": 0.5840909090909091,
+  "acc_ci95": [
+   0.5367805350433956,
+   0.6321491969568892
+  ],
+  "top_confusions": [
+   {
+    "true": "Petronia petronia",
+    "pred": "Sylvia cantillans",
+    "n": 17
+   },
+   {
+    "true": "Poecile palustris",
+    "pred": "Periparus ater",
+    "n": 14
+   },
+   {
+    "true": "Parus major",
+    "pred": "Anthus trivialis",
+    "n": 11
+   },
+   {
+    "true": "Luscinia megarhynchos",
+    "pred": "lullula arborea",
+    "n": 11
+   },
+   {
+    "true": "Turdus philomelos",
+    "pred": "Periparus ater",
+    "n": 10
+   },
+   {
+    "true": "Fringilla coelebs",
+    "pred": "Erithacus rubecula",
+    "n": 10
+   },
+   {
+    "true": "Linaria cannabina",
+    "pred": "Sylvia undata",
+    "n": 10
+   },
+   {
+    "true": "Parus major",
+    "pred": "Cyanistes caeruleus",
+    "n": 10
+   },
+   {
+    "true": "Dendrocopos major",
+    "pred": "Erithacus rubecula",
+    "n": 9
+   },
+   {
+    "true": "Emberiza cirlus",
+    "pred": "Serinus serinus",
+    "n": 8
+   },
+   {
+    "true": "Alauda arvensis",
+    "pred": "Poecile palustris",
+    "n": 8
+   },
+   {
+    "true": "Columba palumbus",
+    "pred": "Erithacus rubecula",
+    "n": 7
+   }
+  ],
+  "n_classes_recall0": 11,
+  "macro_recall": 0.41121469720662635,
+  "macro_precision": 0.5680796525887142,
+  "classes_never_predicted": 10
+ }
+}

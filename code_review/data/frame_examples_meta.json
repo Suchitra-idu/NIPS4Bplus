@@ -1,0 +1,20 @@
+{
+ "fixed_by_span": {
+  "file": "nips4b_birds_trainfile683.wav",
+  "label": 31,
+  "start": 1.787210884,
+  "length": 0.208979592
+ },
+ "correct_both": {
+  "file": "nips4b_birds_trainfile468.wav",
+  "label": 7,
+  "start": 1.182040816,
+  "length": 0.146938776
+ },
+ "wrong_both": {
+  "file": "nips4b_birds_trainfile685.wav",
+  "label": 28,
+  "start": 0.336689342,
+  "length": 1.468662132
+ }
+}
