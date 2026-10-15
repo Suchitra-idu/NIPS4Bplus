@@ -1,0 +1,11 @@
+accuracy=0.6159
+roc_auc=0.8054
+precision=0.5976
+recall=0.6159
+f1=0.5686
+false_positive_rate=0.0081
+false_negative_rate=0.3841
+top3_accuracy=0.6235
+top5_accuracy=0.6318
+roc_auc_mean_exp=0.9857
+trainable_params=2513025

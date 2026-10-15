@@ -22,6 +22,7 @@ https://github.com/fbravosanchez/NIPS4Bplus#readme
 """
 
 import os
+import time
 #import scipy.io.wavfile
 import soundfile as sf
 import torch
@@ -37,34 +38,48 @@ from dnn_models import SincNet as CNN
 from data_io import ReadList,read_conf,str_to_bool
 
 import pandas as pd
+from sincnet_fixes import read_fixes, apply_model_fixes, cnn_param_groups
+
+# run test-set validation during training
+run_validation=False
+
+
+def preload_list(wav_lst,data_folder):
+ # load all wav files into memory once
+ audio={}
+ for f in wav_lst['file'].unique():
+  audio[f]=sf.read(data_folder+f)
+ return {'file': wav_lst['file'].to_numpy(),
+         'signal': [audio[f][0] for f in wav_lst['file']],
+         'fs': np.array([audio[f][1] for f in wav_lst['file']]),
+         'start': wav_lst['start'].to_numpy(),
+         'length': wav_lst['length'].to_numpy(),
+         'label': wav_lst['label'].to_numpy()}
+
 
 # def create_batches_rnd(batch_size,data_folder,wav_lst,N_snt,wlen,lab_dict,fact_amp):
 def create_batches_rnd(batch_size,data_folder,wav_lst,N_snt,wlen,fact_amp):
-    
+
  # Initialization of the minibatch (batch_size,[0=>x_t,1=>x_t+N,1=>random_samp])
  sig_batch=np.zeros([batch_size,wlen])
  lab_batch=np.zeros(batch_size)
-  
+
  snt_id_arr=np.random.randint(N_snt, size=batch_size)
- 
+
  rand_amp_arr = np.random.uniform(1.0-fact_amp,1+fact_amp,batch_size)
 
  for i in range(batch_size):
-     
-  # select a random sentence from the list 
+
+  # select a random sentence from the list
   #[fs,signal]=scipy.io.wavfile.read(data_folder+wav_lst[snt_id_arr[i]])
   #signal=signal.astype(float)/32768
 
-  # [signal, fs] = sf.read(data_folder+wav_lst[snt_id_arr[i]])
-  [signal, fs] = sf.read(data_folder+wav_lst.loc[snt_id_arr[i], 'file'])
+  # [signal, fs] = sf.read(data_folder+wav_lst.loc[snt_id_arr[i], 'file'])
+  signal=wav_lst['signal'][snt_id_arr[i]]
+  fs=wav_lst['fs'][snt_id_arr[i]]
 
-  
-  
-  
-  
-
-  t_min = int(wav_lst.loc[snt_id_arr[i], 'start']*fs)
-  t_max = t_min + int(wav_lst.loc[snt_id_arr[i], 'length']*fs)
+  t_min = int(wav_lst['start'][snt_id_arr[i]]*fs)
+  t_max = t_min + int(wav_lst['length'][snt_id_arr[i]]*fs)
 
 
   if t_max-t_min > wlen: # random extract if tag is greater than cw_len
@@ -89,13 +104,13 @@ def create_batches_rnd(batch_size,data_folder,wav_lst,N_snt,wlen,fact_amp):
 
   channels = len(signal.shape)
   if channels == 2:
-    print('WARNING: stereo to mono: '+data_folder+wav_lst[snt_id_arr[i]])
+    print('WARNING: stereo to mono: '+data_folder+wav_lst['file'][snt_id_arr[i]])
     signal = signal[:,0]
   
   # sig_batch[i,:]=signal[snt_beg:snt_end]*rand_amp_arr[i]
   sig_batch[i,:]=signal*rand_amp_arr[i]
   # lab_batch[i]=lab_dict[wav_lst[snt_id_arr[i]]]
-  lab_batch[i]=wav_lst.loc[snt_id_arr[i], 'label']
+  lab_batch[i]=wav_lst['label'][snt_id_arr[i]]
 
  inp=Variable(torch.from_numpy(sig_batch).float().cuda().contiguous())
  lab=Variable(torch.from_numpy(lab_batch).float().cuda().contiguous())
@@ -119,6 +134,13 @@ output_folder=options.output_folder
 fs=int(options.fs)
 cw_len=int(options.cw_len)
 cw_shift=int(options.cw_shift)
+# amplitude factor, default 0.2
+import configparser
+_cfg=configparser.ConfigParser(); _cfg.read(options.cfg)
+fact_amp=_cfg.getfloat('windowing','fact_amp',fallback=0.2)
+# optional fixes from cfg
+fixes=read_fixes(options.cfg)
+print('fixes:', fixes)
 
 #[cnn]
 cnn_N_filt=list(map(int, options.cnn_N_filt.split(',')))
@@ -164,6 +186,7 @@ seed=int(options.seed)
 # wav_lst_tr=ReadList(tr_lst)
 wav_lst_tr=pd.read_csv(tr_lst)
 snt_tr=len(wav_lst_tr)
+wav_data_tr=preload_list(wav_lst_tr,data_folder)
 
 # test list
 # wav_lst_te=ReadList(te_lst)
@@ -209,6 +232,7 @@ CNN_arch = {'input_dim': wlen,
           }
 
 CNN_net=CNN(CNN_arch)
+apply_model_fixes(CNN_net,fixes)
 CNN_net.cuda()
 
 # Loading label dictionary
@@ -253,11 +277,13 @@ if pt_file!='none':
 
 
 
-optimizer_CNN = optim.RMSprop(CNN_net.parameters(), lr=lr,alpha=0.95, eps=1e-8) 
+optimizer_CNN = optim.RMSprop(cnn_param_groups(CNN_net,lr,fixes), lr=lr,alpha=0.95, eps=1e-8) 
 optimizer_DNN1 = optim.RMSprop(DNN1_net.parameters(), lr=lr,alpha=0.95, eps=1e-8) 
 optimizer_DNN2 = optim.RMSprop(DNN2_net.parameters(), lr=lr,alpha=0.95, eps=1e-8) 
 
 
+
+train_start=time.time()
 
 for epoch in range(N_epochs):
   
@@ -273,7 +299,7 @@ for epoch in range(N_epochs):
 
 
     # [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_lst_tr,snt_tr,wlen,lab_dict,0.2)
-    [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_lst_tr,snt_tr,wlen,0.2) #lab_dict,0.2)
+    [inp,lab]=create_batches_rnd(batch_size,data_folder,wav_data_tr,snt_tr,wlen,fact_amp) #lab_dict,0.2)
     pout=DNN2_net(DNN1_net(CNN_net(inp)))
     
     pred=torch.max(pout,dim=1)[1]
@@ -304,78 +330,88 @@ for epoch in range(N_epochs):
 # Full Validation  new  
   if epoch%N_eval_epoch==0:
       
-   CNN_net.eval()
-   DNN1_net.eval()
-   DNN2_net.eval()
-   test_flag=1 
-   loss_sum=0
-   err_sum=0
-   err_sum_snt=0
+   if run_validation:
+    CNN_net.eval()
+    DNN1_net.eval()
+    DNN2_net.eval()
+    test_flag=1 
+    loss_sum=0
+    err_sum=0
+    err_sum_snt=0
    
-   with torch.no_grad():  
-    for i in range(snt_te):
+    with torch.no_grad():  
+     for i in range(snt_te):
        
-     #[fs,signal]=scipy.io.wavfile.read(data_folder+wav_lst_te[i])
-     #signal=signal.astype(float)/32768
+      #[fs,signal]=scipy.io.wavfile.read(data_folder+wav_lst_te[i])
+      #signal=signal.astype(float)/32768
 
-     # [signal, fs] = sf.read(data_folder+wav_lst_te[i])
-     [signal, fs] = sf.read(data_folder+wav_lst_te.loc[i, 'file'])
+      # [signal, fs] = sf.read(data_folder+wav_lst_te[i])
+      [signal, fs] = sf.read(data_folder+wav_lst_te.loc[i, 'file'])
 
-     signal=torch.from_numpy(signal).float().cuda().contiguous()
-     # lab_batch=lab_dict[wav_lst_te[i]]
-     lab_batch=wav_lst_te.loc[i, 'label']
+      signal=torch.from_numpy(signal).float().cuda().contiguous()
+      # lab_batch=lab_dict[wav_lst_te[i]]
+      lab_batch=wav_lst_te.loc[i, 'label']
 
     
-     # split signals into chunks
-     beg_samp=0
-     end_samp=wlen
+      # split signals into chunks
+      beg_samp=0
+      end_samp=wlen
      
-     N_fr=int((signal.shape[0]-wlen)/(wshift))
+      N_fr=int((signal.shape[0]-wlen)/(wshift))
      
 
-     sig_arr=torch.zeros([Batch_dev,wlen]).float().cuda().contiguous()
-     lab= Variable((torch.zeros(N_fr+1)+lab_batch).cuda().contiguous().long())
-     pout=Variable(torch.zeros(N_fr+1,class_lay[-1]).float().cuda().contiguous())
-     count_fr=0
-     count_fr_tot=0
-     while end_samp<signal.shape[0]:
-         sig_arr[count_fr,:]=signal[beg_samp:end_samp]
-         beg_samp=beg_samp+wshift
-         end_samp=beg_samp+wlen
-         count_fr=count_fr+1
-         count_fr_tot=count_fr_tot+1
-         if count_fr==Batch_dev:
-             inp=Variable(sig_arr)
-             pout[count_fr_tot-Batch_dev:count_fr_tot,:]=DNN2_net(DNN1_net(CNN_net(inp)))
-             count_fr=0
-             sig_arr=torch.zeros([Batch_dev,wlen]).float().cuda().contiguous()
+      sig_arr=torch.zeros([Batch_dev,wlen]).float().cuda().contiguous()
+      lab= Variable((torch.zeros(N_fr+1)+lab_batch).cuda().contiguous().long())
+      pout=Variable(torch.zeros(N_fr+1,class_lay[-1]).float().cuda().contiguous())
+      count_fr=0
+      count_fr_tot=0
+      while end_samp<signal.shape[0]:
+          sig_arr[count_fr,:]=signal[beg_samp:end_samp]
+          beg_samp=beg_samp+wshift
+          end_samp=beg_samp+wlen
+          count_fr=count_fr+1
+          count_fr_tot=count_fr_tot+1
+          if count_fr==Batch_dev:
+              inp=Variable(sig_arr)
+              pout[count_fr_tot-Batch_dev:count_fr_tot,:]=DNN2_net(DNN1_net(CNN_net(inp)))
+              count_fr=0
+              sig_arr=torch.zeros([Batch_dev,wlen]).float().cuda().contiguous()
    
-     if count_fr>0:
-      inp=Variable(sig_arr[0:count_fr])
-      pout[count_fr_tot-count_fr:count_fr_tot,:]=DNN2_net(DNN1_net(CNN_net(inp)))
+      if count_fr>0:
+       inp=Variable(sig_arr[0:count_fr])
+       pout[count_fr_tot-count_fr:count_fr_tot,:]=DNN2_net(DNN1_net(CNN_net(inp)))
 
     
-     pred=torch.max(pout,dim=1)[1]
-     loss = cost(pout, lab.long())
-     err = torch.mean((pred!=lab.long()).float())
+      pred=torch.max(pout,dim=1)[1]
+      loss = cost(pout, lab.long())
+      err = torch.mean((pred!=lab.long()).float())
     
-     [val,best_class]=torch.max(torch.sum(pout,dim=0),0)
-     err_sum_snt=err_sum_snt+(best_class!=lab[0]).float()
+      [val,best_class]=torch.max(torch.sum(pout,dim=0),0)
+      err_sum_snt=err_sum_snt+(best_class!=lab[0]).float()
     
     
-     loss_sum=loss_sum+loss.detach()
-     err_sum=err_sum+err.detach()
+      loss_sum=loss_sum+loss.detach()
+      err_sum=err_sum+err.detach()
     
-    err_tot_dev_snt=err_sum_snt/snt_te
-    loss_tot_dev=loss_sum/snt_te
-    err_tot_dev=err_sum/snt_te
+     err_tot_dev_snt=err_sum_snt/snt_te
+     loss_tot_dev=loss_sum/snt_te
+     err_tot_dev=err_sum/snt_te
 
   
-   print("epoch %i, loss_tr=%f err_tr=%f loss_te=%f err_te=%f err_te_snt=%f" % (epoch, loss_tot,err_tot,loss_tot_dev,err_tot_dev,err_tot_dev_snt))
+    print("epoch %i, loss_tr=%f err_tr=%f loss_te=%f err_te=%f err_te_snt=%f" % (epoch, loss_tot,err_tot,loss_tot_dev,err_tot_dev,err_tot_dev_snt))
   
-   with open(output_folder+"/res.res", "a") as res_file:
-    res_file.write("epoch %i, loss_tr=%f err_tr=%f loss_te=%f err_te=%f err_te_snt=%f\n" % (epoch, loss_tot,err_tot,loss_tot_dev,err_tot_dev,err_tot_dev_snt))   
+    with open(output_folder+"/res.res", "a") as res_file:
+     res_file.write("epoch %i, loss_tr=%f err_tr=%f loss_te=%f err_te=%f err_te_snt=%f\n" % (epoch, loss_tot,err_tot,loss_tot_dev,err_tot_dev,err_tot_dev_snt))   
+   else:
+    print("epoch %i, loss_tr=%f err_tr=%f" % (epoch, loss_tot,err_tot))
+    with open(output_folder+"/res.res", "a") as res_file:
+     res_file.write("epoch %i, loss_tr=%f err_tr=%f\n" % (epoch, loss_tot,err_tot))
 
+   # log training time
+   with open(output_folder+"/time.res", "a") as time_file:
+    time_file.write("epoch %i, elapsed_s=%.1f\n" % (epoch, time.time()-train_start))
+
+   # save checkpoint
    checkpoint={'CNN_model_par': CNN_net.state_dict(),
                'DNN1_model_par': DNN1_net.state_dict(),
                'DNN2_model_par': DNN2_net.state_dict(),
@@ -386,3 +422,14 @@ for epoch in range(N_epochs):
    print("epoch %i, loss_tr=%f err_tr=%f" % (epoch, loss_tot,err_tot))
 
 
+# save model after the last epoch
+if fixes['save_last'] and (N_epochs-1)%N_eval_epoch!=0:
+  with open(output_folder+"/res.res", "a") as res_file:
+   res_file.write("epoch %i, loss_tr=%f err_tr=%f\n" % (N_epochs-1, loss_tot,err_tot))
+  with open(output_folder+"/time.res", "a") as time_file:
+   time_file.write("epoch %i, elapsed_s=%.1f\n" % (N_epochs-1, time.time()-train_start))
+  checkpoint={'CNN_model_par': CNN_net.state_dict(),
+              'DNN1_model_par': DNN1_net.state_dict(),
+              'DNN2_model_par': DNN2_net.state_dict(),
+              }
+  torch.save(checkpoint,output_folder+'/model_raw.pkl')
